@@ -13,18 +13,18 @@ reference
   ✅ matplotlib
 
   ✅ pybullet 3.2.7
-## Installation
+## 🔧 Installation
 ```bash
 git clone <your-repo-url>.git
 cd <your-repo-name>
 ```
-## Install Python dependencies (e.g., via pip)
-### Quick
+## 🔧 Install Python dependencies (e.g., via pip)
+#### Quick
 ```bash
 pip install --upgrade pip
 pip install numpy pybullet pybullet_data matplotlib
 ```
-### Recommended (virtual environment)
+#### Recommended (virtual environment)
 ```bash
 python3 -m venv .venv
 source .venv/bin/activate      
