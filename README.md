@@ -33,7 +33,7 @@ pip install --upgrade pip
 pip install numpy pybullet pybullet_data matplotlib
 ```
 # 3️⃣ Repository Structure
-- MPC_Panda/
+- SQL-IPDC/
   - common/
       - \_\_init\_\_.py
       - gridworld_render.py
