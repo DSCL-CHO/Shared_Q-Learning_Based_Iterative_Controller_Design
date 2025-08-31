@@ -11,15 +11,16 @@
   - [2️⃣ Getting Started](#mpc-getting-started)
   - [3️⃣ Repository Structure](#mpc-structure)
   - [4️⃣ Instructions](#mpc-instructions)
-
 ----
-
+<a id="sql-ipdc"></a>
 # 🤖 Shared Q-Learning<br>Based Iterative Controller Design
+<a id="sql-method"></a>
 # 1️⃣ Method
 This repository integrates ***multi-agent shared Q-Learning*** for grid-based path planning with an offline, ***iterative PD gain tuning*** scheme for accurate path tracking by multiple Franka Emika Panda manipulators in ***PyBullet***.
 Agents periodically share the best-performing Q-table to accelerate learning; on the control side, PD gains (Kp, Kd) are tuned offline using RMSE as the performance metric. The framework decouples learning (planning) from control (tracking), which eliminates online optimization during control runtime and simplifies deployment.
 ****
 reference
+<a id="sql-getting-started"></a>
 # 2️⃣ Getting Started
 ## Required Packages
 - Python 3.10.12
@@ -50,6 +51,7 @@ source .venv/bin/activate
 pip install --upgrade pip
 pip install numpy pybullet pybullet_data matplotlib
 ```
+<a id="sql-structure"></a>
 # 3️⃣ Repository Structure
 - SQL-IPDC/
   - common/
@@ -72,6 +74,7 @@ pip install numpy pybullet pybullet_data matplotlib
       - coord_to_xyz.py
       - panda_env.py
 - README.md
+<a id="sql-instructions"></a>
 # 4️⃣ Instructions
 Below is a step-by-step guide to each folder and how to run the corresponding scripts.
 ## 4.1 common/
@@ -109,11 +112,14 @@ python 01_tune_kd.py
 python 02_tune_kp.py
 ```
 ****
+<a id="mpc-panda"></a>
 # 🤖 MPC Panda
+<a id="mpc-method"></a>
 # 1️⃣ Method
 The proposed project implements joint-space **model predictive control (MPC)** for the 7-DoF Franka Emika Panda manipulator. The plant is modeled in continuous time, and a discrete-time prediction model is obtained by integrating the dynamics with a **fourth-order Runge–Kutta (RK4)**. At each sampling instant, the controller solves a finite-horizon optimal control problem to compute joint torques that track a prescribed sequence of reference joint angles while satisfying joint-position and joint-velocity constraints (with optional torque limits). The optimization is formulated in ***CasADi*** and solved with ***IPOPT***. Simulations demonstrate accurate tracking of both constant and time-varying references under these constraints.
 ****
 reference
+<a id="mpc-getting-started"></a>
 # 2️⃣ Getting Started
 ## Required Packages
 - Python 3.10.12
@@ -142,6 +148,7 @@ source .venv/bin/activate
 pip install --upgrade pip
 pip install numpy matplotlib "casadi==3.6.3"
 ```
+<a id="mpc-structure"></a>
 # 3️⃣ Repository Structure
 - MPC_Panda/
   - MPC/
@@ -151,6 +158,7 @@ pip install numpy matplotlib "casadi==3.6.3"
       - get_C.py
       - get_G.py   
 - README.md
+<a id="mpc-instructions"></a>
 # 4️⃣ Instructions
 Below is a step-by-step guide to each folder and how to run the corresponding scripts.
 
