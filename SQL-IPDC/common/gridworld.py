@@ -1,4 +1,3 @@
-###similar with origin
 import os, sys; sys.path.append(os.path.join(os.path.dirname(__file__), '..'))  
 import numpy as np
 import common.gridworld_render as render_helper
@@ -12,8 +11,8 @@ class GridWorld:
             2: (0, -1),  # LEFT
             3: (0, 1),   # RIGHT
         }
-
-        self.reward_map = np.array([# reward_map
+# reward_map
+        self.reward_map = np.array([
             [None,  0, 0,   1000],
             [0,  0,  0,  0],
             [0, 0,  0, None],
@@ -22,7 +21,7 @@ class GridWorld:
             [0,   30,  0, -1.0]   
                     
         ])
-
+# state
         self.goal_state = (0, 3)            # goal
         self.wall_states = [(0, 0),(2,3)]   # walls
         self.start_state = (5, 0)           # start
