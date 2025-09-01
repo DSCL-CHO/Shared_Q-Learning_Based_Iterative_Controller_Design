@@ -82,7 +82,6 @@ Below is a step-by-step guide to each folder and how to run the corresponding sc
 ## 4.2 q_learning/
 **`train_q_learning.py`**  — Runs ***shared Q-learning*** across multiple agents.
 
-Produces/plots each agent’s cumulative reward curves (and logs).
 ```bash
 cd q_learning
 python train_q_learning.py
@@ -95,6 +94,7 @@ python extract_path.py
 ```
 ## 4.3 kp_then_kd/
 **`01_tune_kp.py`** — Fix ***Kd*** and ***tune Kp first*** based on tracking error metrics (e.g., RMSE).
+
 **`02_tune_kd.py`** — Using the best Kp, ***tune Kd*** to further reduce the error.
 
 ```bash
@@ -104,10 +104,11 @@ python 02_tune_kd.py
 ```
 ## 4.4 kd_then_kp/
 **`01_tune_kd.py`** — Fix ***Kp*** and ***tune Kd first*** based on tracking error metrics (e.g., RMSE).
+
 **`02_tune_kp.py`** — Using the best Kd, ***tune Kp*** to further reduce the error.
 
 ```bash
-cd kd_then_kp/
+cd kd_then_kp
 python 01_tune_kd.py
 python 02_tune_kp.py
 ```
