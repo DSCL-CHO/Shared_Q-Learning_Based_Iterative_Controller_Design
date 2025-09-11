@@ -1,4 +1,7 @@
-#TORQUE CONTROL=J@FORCE+GRAVITY      # 9D TORQUE
+# panda_env.py for 'kp_then_kd'
+
+# TORQUE CONTROL: tau = J.T @ force  + gravity_torques
+# 9D TORQUE
 import os, sys; sys.path.append(os.path.join(os.path.dirname(__file__), '..'))  
 import pybullet as p
 import pybullet_data
@@ -107,7 +110,7 @@ class MultiPandaEnv:
                 qddot=[*joint_acc,0.0,0.0] 
 
                 jacobian=p.calculateJacobian(
-                    # self.robots,
+                    
                     robot_id,
                     self.ee_link_index,
                     [0.0, 0.0, 0.0],  
