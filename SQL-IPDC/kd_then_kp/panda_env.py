@@ -1,7 +1,4 @@
-##TORQUE CONTROL=J@FORCE+GRAVITY      # 9D TORQUE
-##TORQUE CONTROL=J@FORCE+GRAVITY      # 9D TORQUE
-##TORQUE CONTROL=J@FORCE+GRAVITY      # 9D TORQUE
-
+#TORQUE CONTROL=J@FORCE+GRAVITY      # 9D TORQUE
 import os, sys; sys.path.append(os.path.join(os.path.dirname(__file__), '..'))  
 import pybullet as p
 import pybullet_data
@@ -12,25 +9,24 @@ from kd_then_kp.coord_to_xyz import coord_to_xyz
 class MultiPandaEnv:
     def __init__(self, num_robots=2, gui=True, x_offsets=None,
                  kp_list=None, kd_list=None,
-                 draw_traj=False, traj_color=(1, 0, 0), traj_life=0, traj_width=2):  # 📏
+                 draw_traj=False, traj_color=(1, 0, 0), traj_life=0, traj_width=2):  
         self.gui = gui
         self.num_robots = num_robots
      
-        self.kp_list = kp_list if kp_list else [150.0] * num_robots  # 📏
-        self.kd_list = kd_list if kd_list else [20.0] * num_robots   # 📏
+        self.kp_list = kp_list if kp_list else [150.0] * num_robots  
+        self.kd_list = kd_list if kd_list else [20.0] * num_robots   
 
         self.ee_link_index = 11
         self.robots = []
         self.prev_errors = []
-        self.errors = [[] for _ in range(num_robots)]  # 로봇별 오차 저장 리스트 🔎
+        self.errors = [[] for _ in range(num_robots)]  
         self.errors2 = [[] for _ in range(num_robots)] 
 
-        # 궤적 그리기 옵션
+        # setting for draw trajectory
         self.draw_traj = draw_traj
         self.traj_color = traj_color
         self.traj_life = traj_life
         self.traj_width = traj_width
-        # 궤적 시작점 기록
         self.traj_last_pos = [None] * num_robots
         self.traj_ids = [[] for _ in range(num_robots)]
 
@@ -41,12 +37,13 @@ class MultiPandaEnv:
 
         # p.setRealTimeSimulation(0)
         # p.setTimeStep(0.001)
-        ##camera
+                     
+        # camera
         p.resetDebugVisualizerCamera(
-            cameraDistance=6.0,               # 카메라와 타깃 거리
-            cameraYaw=-20,                     # 수평 회전 (좌우 회전)
-            cameraPitch=-33,                 # 수직 회전 (위아래 각도)
-            cameraTargetPosition=[2.5, 1.5, -1]    # 카메라가 바라보는 중심
+            cameraDistance=6.0,             
+            cameraYaw=-20,                 
+            cameraPitch=-33,               
+            cameraTargetPosition=[2.5, 1.5, -1]    
         )
         p.setAdditionalSearchPath(pybullet_data.getDataPath())
         p.setGravity(0, 0, -9.81)
@@ -65,13 +62,12 @@ class MultiPandaEnv:
             if self.draw_traj:
                 self.traj_last_pos[i] = self.get_ee_position(i)
 
-                # 팔 7축(기존 movable_joints 유지)
         self.movable_joints = [
             j for j in range(p.getNumJoints(self.robots[0]))
             if p.getJointInfo(self.robots[0], j)[2] == p.JOINT_REVOLUTE
         ][:7]
         self.prev_vel = [np.zeros(len(self.movable_joints)) for _ in range(num_robots)]
-        ###########################
+
         for rid in self.robots:
             for j in range(p.getNumJoints(rid)):
                 p.setJointMotorControl2(
@@ -90,8 +86,8 @@ class MultiPandaEnv:
             for idx in range(self.num_robots):
                 robot_id = self.robots[idx]
                 
-                # 현재 관절 상태 업데이트
-                joint_Pos = [float(p.getJointState(robot_id, j)[0]) for j in self.movable_joints] # 77777
+                # update joint state
+                joint_Pos = [float(p.getJointState(robot_id, j)[0]) for j in self.movable_joints] # 7_dimensions
                 joint_vel = [float(p.getJointState(robot_id, j)[1]) for j in self.movable_joints]
                 # self.prev_vel[idx]= joint_vel
                 joint_acc = (joint_vel -  self.prev_vel[idx])/dt
@@ -102,51 +98,28 @@ class MultiPandaEnv:
                 e=np.array(q_ref)-np.array(q)
                 de=np.array(qd_ref)-np.array(dq)
 
-                
                 self.prev_vel[idx] = np.array(joint_vel) 
 
                 cur = self.get_ee_position(idx)
-                target = np.array(target_list[idx])   #3d
+                target = np.array(target_list[idx])   # 3-dimensions
                 error = target - cur
 
-                cur_vel = self.get_ee_velocity(idx)   # ← () 붙여서 호출해야 함
+                cur_vel = self.get_ee_velocity(idx) 
                 d_error = - np.array(cur_vel)
                 # print(cur_vel)
-                
                 # joint_states = [p.getJointState(robot_id, j) for j in self.movable_joints]
 
                 q = [*joint_Pos,0.0,0.0]
-                qdot_g=[0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0] # [q1-q7, prismatic joint 1, 2]
+                qdot_g=[0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0]
                 qddot_g=[0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0]
 
-                # gravity_torques=p.calculateInverseDynamics(self.robot, q, qddot, qddot)
                 gravity_torques=p.calculateInverseDynamics(robot_id, q, qdot_g, qddot_g)
                 
                 qdot=[*joint_vel,0.0,0.0] # [q1-q7, prismatic joint 1, 2]
                 qddot=[*joint_acc,0.0,0.0] 
 
-                # jacobian=p.calculateJacobian(
-                #     # self.robots,
-                #     robot_id,
-                #     self.ee_link_index,
-                #     [0.0, 0.0, 0.0],   # local position: 길이 3 리스트
-                #     q,        
-                #     qdot,       
-                #     qddot          
-                # )
-                # print(jacobian)
+                tau = self.kp_list[idx]*e + self.kd_list[idx]*de + gravity_torques
                 
-                
-                # jacobian = (linear_jacobian, angular_jacobian)
-                # linear_jacobian, angular_jacobian = jacobian[0], jacobian[1]
-                # J = np.array(linear_jacobian) 
-
-                # force = self.kp_list[idx] * error + self.kd_list[idx] * d_error
-                # tau = J.T @ force  + gravity_torques 
-                tau = self.kp_list[idx] * e + self.kd_list[idx] * de+gravity_torques
-                #9*1=9*3@3*1 + 9*1
-         
-
                 for i, j in enumerate(self.movable_joints):
                     p.setJointMotorControl2(robot_id,  j, p.TORQUE_CONTROL, force=float(tau[i]))
                 
@@ -158,7 +131,7 @@ class MultiPandaEnv:
 
             p.stepSimulation()
 
-            # 궤적 선 그리기
+            # draw tajectory
             if self.draw_traj:
                 for idx in range(self.num_robots):
                     new_pos = self.get_ee_position(idx)
@@ -172,7 +145,6 @@ class MultiPandaEnv:
                         )
                         self.traj_ids[idx].append(line_id)
                     self.traj_last_pos[idx] = new_pos
-
 
             if self.gui:
                 time.sleep(1/240)
@@ -213,7 +185,6 @@ class MultiPandaEnv:
                                          rgbaColor=color)
                 p.createMultiBody(baseVisualShapeIndex=vs, basePosition=[pos[0], pos[1], pos[2] - 0.1])
 
-###########################transform
     def get_ee_transform(self, robot_index):
         robot_id = self.robots[robot_index]
         ee_index = self.ee_link_index
