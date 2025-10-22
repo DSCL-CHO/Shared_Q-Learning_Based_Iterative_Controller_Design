@@ -40,7 +40,6 @@ def make_dynamics(linear_solver='symbolicqr'):
     # rhs = tau - C - G 
     # rhs = tau - C
     rhs = tau
-    # ★ 핵심: SX에서도 expand 가능한 linsol 지정
     # ddq = tau 
     
     # ddq = (M**-1)*tau
